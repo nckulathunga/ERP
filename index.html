@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FleetFlow Management System</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#3B82F6', // Blue-500
+                        secondary: '#10B981', // Emerald-500
+                        accent: '#F59E0B', // Amber-500
+                        dark: '#1F2937', // Gray-800
+                        light: '#F3F4F6', // Gray-100
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Excel & PDF Export -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>window.jsPDF = window.jspdf.jsPDF;</script>
+    <script src="https://unpkg.com/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+
+    <!-- Project CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Favicon (Optional) -->
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚛</text></svg>">
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
+
+    <!-- Auth Container -->
+    <div id="auth-container"
+        class="hidden min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600">
+        <!-- Login Form will be injected here -->
+    </div>
+
+    <!-- App Container -->
+    <div id="app-container" class="hidden flex h-screen overflow-hidden">
+
+        <!-- Sidebar -->
+        <aside
+            class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col z-10 transition-transform duration-300"
+            id="sidebar">
+            <div class="h-16 flex items-center justify-center border-b border-gray-200">
+                <h1 class="text-2xl font-bold text-primary flex items-center gap-2">
+                    🚛 FleetFlow
+                </h1>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1" id="sidebar-nav">
+                <!-- Navigation items injected by JS -->
+            </nav>
+
+            <div class="p-4 border-t border-gray-200">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold"
+                        id="user-avatar">
+                        <!-- Initials -->
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-900" id="user-name">User Name</p>
+                        <p class="text-xs text-gray-500" id="user-role">Role</p>
+                    </div>
+                </div>
+                <button id="logout-btn"
+                    class="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2 text-sm text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
+                    <span data-i18n="logout">Logout</span>
+                </button>
+
+                <div class="mt-4 border-t border-gray-100 pt-4">
+                    <div class="flex items-center justify-between px-2">
+                        <span class="text-xs text-gray-400">Language</span>
+                        <select onchange="I18n.setLanguage(this.value)"
+                            class="text-xs border border-gray-200 rounded px-1 py-0.5 bg-gray-50 focus:ring-0 cursor-pointer"
+                            id="desktop-lang-select">
+                            <option value="en">English</option>
+                            <option value="si">Sinhala</option>
+                            <option value="ta">Tamil</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col h-full relative overflow-hidden">
+
+            <!-- Mobile Header -->
+            <header
+                class="md:hidden h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 z-20">
+                <h1 class="text-xl font-bold text-primary">FleetFlow</h1>
+                <div class="flex items-center gap-2">
+                    <select onchange="I18n.setLanguage(this.value)"
+                        class="text-sm border-none bg-transparent focus:ring-0 cursor-pointer" id="mobile-lang-select">
+                        <option value="en">EN</option>
+                        <option value="si">SI</option>
+                        <option value="ta">TA</option>
+                    </select>
+                    <button id="mobile-menu-btn" class="text-gray-600 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Mobile Sidebar Overlay -->
+            <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden md:hidden"></div>
+
+            <!-- Page Content -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6" id="main-content">
+                <!-- Dynamic Content injected by JS -->
+            </main>
+        </div>
+    </div>
+
+    <!-- Modals Container -->
+    <div id="modal-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/store.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
